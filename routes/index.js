@@ -7,7 +7,7 @@ router.get('/health', (req, res) => {
 });
 
 router.use('/auth', require('./auth'));
-router.use('/', require('./scrape'));
+router.use('/scrape', require('./scrape'));
 router.use('/cart', require('./cart'));
 router.use('/order', require('./order'));
 
