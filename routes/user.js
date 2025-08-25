@@ -5,6 +5,7 @@ const auth = require('../middleware/auth');
 const { body } = require('express-validator');
 
 router.get('/profile', auth, userController.getProfile);
+router.get('/dashboard', auth, userController.getDashboard);
 
 // Address management
 router.get('/addresses', auth, userController.getAddresses);

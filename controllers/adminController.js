@@ -471,3 +471,46 @@ exports.rejectPayment = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+// Get all admin notification emails
+exports.getAdminEmails = async (req, res) => {
+  try {
+    let settings = await Settings.findOne({});
+    if (!settings) settings = await Settings.create({ adminEmails: [] });
+    res.json({ adminEmails: settings.adminEmails });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch admin emails', error: err.message });
+  }
+};
+
+// Add a new admin notification email
+exports.addAdminEmail = async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: 'Email is required' });
+  try {
+    let settings = await Settings.findOne({});
+    if (!settings) settings = await Settings.create({ adminEmails: [email] });
+    else if (!settings.adminEmails.includes(email)) {
+      settings.adminEmails.push(email);
+      await settings.save();
+    }
+    res.json({ adminEmails: settings.adminEmails });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to add admin email', error: err.message });
+  }
+};
+
+// Remove an admin notification email
+exports.removeAdminEmail = async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: 'Email is required' });
+  try {
+    let settings = await Settings.findOne({});
+    if (!settings) return res.status(404).json({ message: 'Settings not found' });
+    settings.adminEmails = settings.adminEmails.filter(e => e !== email);
+    await settings.save();
+    res.json({ adminEmails: settings.adminEmails });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to remove admin email', error: err.message });
+  }
+};

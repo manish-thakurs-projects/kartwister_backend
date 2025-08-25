@@ -35,5 +35,8 @@ router.get('/users', auth, adminController.getAllUsers);
 router.post('/email', auth, adminController.sendEmail);
 router.post('/bulk-email', auth, adminController.sendBulkEmail);
 router.get('/charges', auth, isAdmin, adminController.getCharges);
+router.get('/emails', auth, isAdmin, adminController.getAdminEmails);
+router.post('/emails', auth, isAdmin, adminController.addAdminEmail);
+router.delete('/emails', auth, isAdmin, adminController.removeAdminEmail);
 
 module.exports = router; 

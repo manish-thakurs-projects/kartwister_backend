@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Order = require('../models/Order');
 
 exports.getProfile = async (req, res) => {
   try {
@@ -79,6 +80,40 @@ exports.selectAddress = async (req, res) => {
     address.isDefault = true;
     await user.save();
     res.json(user.addresses);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// Aggregated user dashboard endpoint
+exports.getDashboard = async (req, res) => {
+  try {
+    // Get user profile (excluding sensitive fields)
+    const user = await User.findById(req.user.userId)
+      .select('-passwordHash -otp -__v')
+      .lean();
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Get all orders for this user, most recent first
+    const orders = await Order.find({ user: req.user.userId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // Respond with all details
+    res.json({
+      profile: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        isVerified: user.isVerified,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      },
+      addresses: user.addresses || [],
+      scrapeHistory: user.scrapeRequests || [],
+      orders: orders || []
+    });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }

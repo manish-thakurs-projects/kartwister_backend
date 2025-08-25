@@ -7,6 +7,16 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 const Charges = require('../models/Charges');
+const Settings = require('../models/Settings');
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 exports.placeOrder = async (req, res) => {
   try {
@@ -39,6 +49,31 @@ exports.placeOrder = async (req, res) => {
     user.orders.push(order._id);
     user.cart = [];
     await user.save();
+    // Notify all admin emails
+    try {
+      const settings = await Settings.findOne({});
+      const adminEmails = settings?.adminEmails || [];
+      if (adminEmails.length > 0) {
+        const orderDetails = order.products.map(p => `${p.name} x${p.quantity} (रु${p.price})`).join('<br/>');
+        await transporter.sendMail({
+          from: process.env.SMTP_USER,
+          to: adminEmails,
+          subject: 'New Order Placed',
+          html: `
+            <div style="background:#030303;color:white;padding:32px;font-family:'Segoe UI',sans-serif;max-width:600px;margin:auto;border-radius:12px;">
+              <h1 style="color:#ff3e00;font-size:24px;">New Order Received</h1>
+              <p style="font-size:16px;">A new order has been placed by <b>${user.name}</b> (${user.email}).</p>
+              <div style="margin:20px 0;background:#1e1e1e;padding:16px;border-radius:8px;">
+                <b>Order ID:</b> ${order._id}<br/>
+                <b>Products:</b><br/>${orderDetails}<br/>
+                <b>Total:</b> रु${order.subtotal.toFixed(2)}
+              </div>
+              <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin" style="display:inline-block;background:#ff3e00;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:16px;">View Admin Panel</a>
+            </div>
+          `
+        });
+      }
+    } catch (e) { console.error('Failed to send admin order notification:', e); }
     res.status(201).json(order);
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
@@ -116,6 +151,31 @@ exports.placeOrderWithProof = async (req, res) => {
     user.orders.push(order._id);
     user.cart = [];
     await user.save();
+    // Notify all admin emails
+    try {
+      const settings = await Settings.findOne({});
+      const adminEmails = settings?.adminEmails || [];
+      if (adminEmails.length > 0) {
+        const orderDetails = order.products.map(p => `${p.name} x${p.quantity} (रु${p.price})`).join('<br/>');
+        await transporter.sendMail({
+          from: process.env.SMTP_USER,
+          to: adminEmails,
+          subject: 'New Order Placed',
+          html: `
+            <div style="background:#030303;color:white;padding:32px;font-family:'Segoe UI',sans-serif;max-width:600px;margin:auto;border-radius:12px;">
+              <h1 style="color:#ff3e00;font-size:24px;">New Order Received</h1>
+              <p style="font-size:16px;">A new order has been placed by <b>${user.name}</b> (${user.email}).</p>
+              <div style="margin:20px 0;background:#1e1e1e;padding:16px;border-radius:8px;">
+                <b>Order ID:</b> ${order._id}<br/>
+                <b>Products:</b><br/>${orderDetails}<br/>
+                <b>Total:</b> रु${order.subtotal.toFixed(2)}
+              </div>
+              <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin" style="display:inline-block;background:#ff3e00;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:16px;">View Admin Panel</a>
+            </div>
+          `
+        });
+      }
+    } catch (e) { console.error('Failed to send admin order notification:', e); }
     res.status(201).json(order);
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
