@@ -27,10 +27,10 @@ router.get('/current-qr', auth, isAdmin, adminController.getCurrentQR);
 router.get('/completed-orders', auth, adminController.getCompletedOrders);
 const chargesController = require('../controllers/adminController');
 const userAuth = require('../middleware/auth');
-router.get('/public-charges', userAuth, chargesController.getCharges); // Authenticated users can fetch charges
+router.get('/public-charges', chargesController.getCharges); // Public endpoint for charges
 // POST /admin/charges expects { shippingCharge, serviceCharge, transactionRate }
 router.post('/charges', auth, isAdmin, adminController.setCharges);
-router.get('/public-qr', userAuth, adminController.getCurrentQR); // Authenticated users can fetch QR
+router.get('/public-qr', adminController.getCurrentQR); // Public endpoint for QR
 router.get('/users', auth, adminController.getAllUsers);
 router.post('/email', auth, adminController.sendEmail);
 router.post('/bulk-email', auth, adminController.sendBulkEmail);

@@ -3,6 +3,7 @@ const router = express.Router();
 const scrapeController = require('../controllers/scrapeController');
 const auth = require('../middleware/auth');
 
-router.post('/scrape', auth, scrapeController.scrapeProduct);
+// Public scrape endpoint (no authentication required)
+router.post('/scrape', scrapeController.scrapeProduct);
 
 module.exports = router; 

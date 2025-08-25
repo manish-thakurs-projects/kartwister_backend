@@ -20,11 +20,20 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Restrict CORS to frontend domain (replace with your actual domain)
+// CORS configuration for deployed domains
 app.use(cors({
-  origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3000',
-  credentials: true
+  origin: [
+    process.env.FRONTEND_ORIGIN || 'http://localhost:3000',
+    'https://rand2.manish-thakur.com.np',
+    'https://rand2.manish-thakur.com.np/api'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 
 // Hide Express version
 app.disable('x-powered-by');
