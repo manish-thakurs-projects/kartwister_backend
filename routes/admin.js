@@ -25,9 +25,8 @@ router.post('/upload-qr', auth, isAdmin, upload.single('qr'), adminController.up
 router.get('/scrape-requests', auth, isAdmin, adminController.getAllScrapeRequests);
 router.get('/current-qr', auth, isAdmin, adminController.getCurrentQR);
 router.get('/completed-orders', auth, adminController.getCompletedOrders);
-const chargesController = require('../controllers/adminController');
-const userAuth = require('../middleware/auth');
-router.get('/public-charges', chargesController.getCharges); // Public endpoint for charges
+
+router.get('/public-charges', adminController.getCharges); // Public endpoint for charges
 // POST /admin/charges expects { shippingCharge, serviceCharge, transactionRate }
 router.post('/charges', auth, isAdmin, adminController.setCharges);
 router.get('/public-qr', adminController.getCurrentQR); // Public endpoint for QR

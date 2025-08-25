@@ -150,7 +150,7 @@ exports.approvePayment = async (req, res) => {
               <strong>Status:</strong> Approved & Paid
             </p>
           </div>
-          <a href="http://localhost:3000/orders/${order._id}/track" 
+          <a href="http://localhost:3001/orders/${order._id}/track" 
              style="display:inline-block; background-color:#ff3e00; color:white; padding:14px 24px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:16px;">
             🚚 Track Your Order
           </a>
@@ -252,7 +252,7 @@ exports.verifyOrderPayment = async (req, res) => {
           <strong>Status:</strong> Paid
         </p>
       </div>
-      <a href="http://localhost:3000/orders/${order._id}/track" 
+      <a href="http://localhost:3001/orders/${order._id}/track" 
          style="display:inline-block; background-color:#ff3e00; color:white; padding:14px 24px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:16px;">
         🚚 Track Your Order
       </a>
@@ -307,7 +307,7 @@ exports.completeDelivery = async (req, res) => {
           <strong>Status:</strong> Delivered
         </p>
       </div>
-      <a href="http://localhost:3000/orders/${order._id}/track" 
+      <a href="http://localhost:3001/orders/${order._id}/track" 
          style="display:inline-block; background-color:#ff3e00; color:white; padding:14px 24px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:16px;">
         🧾 View Order Summary
       </a>
@@ -453,7 +453,7 @@ exports.rejectPayment = async (req, res) => {
               <strong>Status:</strong> Payment Rejected
             </p>
           </div>
-          <a href="http://localhost:3000/repay/${order._id}" 
+          <a href="http://localhost:3001/repay/${order._id}" 
              style="display:inline-block; background-color:#ff3e00; color:white; padding:14px 24px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:16px; margin-bottom: 16px;">
             💳 Pay Again
           </a>

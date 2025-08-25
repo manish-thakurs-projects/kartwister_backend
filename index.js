@@ -23,7 +23,7 @@ app.use(limiter);
 // CORS configuration for deployed domains
 app.use(cors({
   origin: [
-    process.env.FRONTEND_ORIGIN || 'http://localhost:3000',
+    process.env.FRONTEND_ORIGIN || 'http://localhost:3001',
     'https://rand2.manish-thakur.com.np',
     'https://rand2.manish-thakur.com.np/api'
   ],
